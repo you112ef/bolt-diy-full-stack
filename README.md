@@ -1,4 +1,4 @@
-# Ollama with OpenWebUI Docker Setup
+# Ollama NVIDIA GPU with OpenWebUI Docker - Setup (Windows)
 
 This guide explains how to set up Ollama with OpenWebUI using Docker on Windows with NVIDIA GPU support.
 
@@ -8,7 +8,6 @@ This guide explains how to set up Ollama with OpenWebUI using Docker on Windows 
 2. **NVIDIA GPU Driver**: Install the latest GPU drivers from [NVIDIA's website](https://www.nvidia.com/Download/index.aspx)
 3. **Docker Desktop**: Install Docker Desktop with WSL 2 integration
 4. **WSL 2**: Set up Windows Subsystem for Linux
-5. **NVIDIA Container Toolkit**: Install the NVIDIA Container Toolkit for GPU support
 
 ## Project Structure
 
