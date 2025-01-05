@@ -193,4 +193,4 @@ If you encounter any issues:
 3. Ensure all prerequisites are properly installed
 4. Check for any system resource limitations
 
-Remember to always use the latest stable versions of Docker, NVIDIA drivers, and the NVIDIA Container Toolkit for the best compatibility.
+Remember to always use the latest stable versions of Docker and NVIDIA driversfor the best compatibility.
