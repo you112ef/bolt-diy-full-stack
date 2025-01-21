@@ -57,7 +57,7 @@ services:
     networks:
       - shared_network
     environment:
-      - NODE_ENV=production # Example environment variable, update as needed
+      - OLLAMA_API_BASE_URL=http://host.docker.internal:11434
     volumes:
       - bolt-diy-data:/usr/src/app/data # Persistent storage for Bolt DIY
     restart: unless-stopped
