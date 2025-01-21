@@ -20,8 +20,8 @@ services:
               count: all
               capabilities: [gpu]
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - nvidia_VISIBLE_DEVICES=all
+      - nvidia_DRIVER_CAPABILITIES=compute,utility
       - OLLAMA_HOST=0.0.0.0:11434  # Ensures binding to all network interfaces
       - OLLAMA_DEBUG=true
     restart: unless-stopped
@@ -41,12 +41,28 @@ services:
               count: all
               capabilities: [gpu]
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      - OLLAMA_URL=http://ollama:11434  # Ensures OpenWebUI connects to Ollama
+      - nvidia_VISIBLE_DEVICES=all
+      - nvidia_DRIVER_CAPABILITIES=compute,utility
+      - OLLAMA_URL=http://host.docker.internal:11434  # Ensures OpenWebUI connects to Ollama
     volumes:
       - openwebui-data:/usr/src/app/models  # Persistent model storage
     restart: unless-stopped
 
+  bolt-diy:
+    image: ghcr.io/stackblitz-labs/bolt.diy:latest
+    container_name: bolt-diy
+    env_file: ".env.local"
+    ports:
+      - "3000:5173" 
+    networks:
+      - shared_network
+    environment:
+      - NODE_ENV=production # Example environment variable, update as needed
+    volumes:
+      - bolt-diy-data:/usr/src/app/data # Persistent storage for Bolt DIY
+    restart: unless-stopped
+    
 volumes:
+  ollama:
   openwebui-data:
+  bolt-diy-data:

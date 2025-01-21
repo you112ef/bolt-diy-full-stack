@@ -1,0 +1,53 @@
+networks:
+  shared_network:
+    driver: bridge
+
+services:
+  ollama:
+    image: ollama/ollama:rocm
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: gpu
+              capabilities: [compute, utility]
+    environment:
+      - OLLAMA_GPU=1  # Example: enable GPU in the app if applicable
+    volumes:
+      - ollama:/root/.ollama
+    restart: unless-stoppe
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: openwebui
+    ports:
+      - "8080:8080"
+    networks:
+      - shared_network
+    volumes:
+      - openwebui-data:/usr/src/app/models
+    environment:
+      - OLLAMA_URL=http://host.docker.internal:11434
+    restart: unless-stopped
+
+  bolt-diy:
+    image: ghcr.io/stackblitz-labs/bolt.diy:latest
+    container_name: bolt-diy
+    env_file: ".env.local"
+    ports:
+      - "3000:5173" 
+    networks:
+      - shared_network
+    environment:
+      - NODE_ENV=production # Example environment variable, update as needed
+    volumes:
+      - bolt-diy-data:/usr/src/app/data # Persistent storage for Bolt DIY
+    restart: unless-stopped
+
+volumes:
+  ollama:
+  openwebui-data:
+  bolt-diy-data:
