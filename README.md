@@ -1,196 +1,255 @@
-# Ollama NVIDIA GPU with OpenWebUI Docker - Setup (Windows)
+# Local AI Development Environment
 
-This guide explains how to set up Ollama with OpenWebUI using Docker on Windows with NVIDIA GPU support.
+This project sets up a local AI development environment with Ollama, OpenWebUI, and Bolt DIY, supporting both NVIDIA and AMD GPUs.
+
+## Getting Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/leex279/bolt-diy-full-stack.git
+```
+
+2. Navigate to the project directory:
+```bash
+cd bolt-diy-full-stack
+```
 
 ## Prerequisites
 
-1. **Internet Access**: Ensure your machine has a stable internet connection
-2. **NVIDIA GPU Driver**: Install the latest GPU drivers from [NVIDIA's website](https://www.nvidia.com/Download/index.aspx)
-3. **Docker Desktop**: Install Docker Desktop with WSL 2 integration
-4. **WSL 2**: Set up Windows Subsystem for Linux
+- Docker and Docker Compose
+  - [Install Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)
+  - [Docker Compose Installation](https://docs.docker.com/compose/install/)
+
+- For NVIDIA GPUs:
+  - [Latest NVIDIA Drivers](https://www.nvidia.com/Download/index.aspx)
+  - [NVIDIA Container Toolkit Installation](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
+
+- For AMD GPUs:
+  - Windows:
+    - ⚠️ **Important Note**: ROCm containers are currently not supported natively on Windows. You have two options:
+      1. Use WSL2 with Ubuntu and follow the [ROCm Installation Guide for Linux](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/)
+      2. Use the CPU-only version by removing the GPU-related configurations from the docker-compose file
+  - Linux:
+    - [ROCm Installation Guide for Linux](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/)
+    - Follow the Quick Start guide for your specific Linux distribution
+  - [Supported GPUs List](https://rocm.docs.amd.com/en/latest/release/gpu_os_support.html)
 
 ## Project Structure
 
-Create a new directory for your project and add these files:
-
-```bash
-your-project/
+```
+project/
+├── docker-compose-amd.yml
+├── docker-compose-nvidia.yml
 ├── Dockerfile
-├── docker-compose.yml
+├── .env.local
 └── README.md
-```
-
-## Configuration Files
-
-### 1. Dockerfile
-
-```dockerfile
-FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04
-
-# Install Python3, pip, and curl
-RUN apt-get update && apt-get install -y \
-    python3 python3-pip curl \
-    && apt-get clean
-
-# Install Ollama CLI
-RUN curl -fsSL https://ollama.com/install.sh | bash
-
-# Expose Ollama port
-EXPOSE 11434
-
-# Start Ollama service
-CMD ["ollama", "serve"]
-```
-
-### 2. docker-compose.yml
-
-```yaml
-networks:
-  shared_network:
-    driver: bridge
-
-services:
-  ollama:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "11434:11434"
-    runtime: nvidia
-    networks:
-      - shared_network
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      - OLLAMA_HOST=0.0.0.0:11434
-      - OLLAMA_DEBUG=true
-    restart: unless-stopped
-
-  openwebui:
-    image: ghcr.io/open-webui/open-webui:latest
-    ports:
-      - "8080:8080"
-    runtime: nvidia
-    networks:
-      - shared_network
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      - OLLAMA_URL=http://ollama:11434
-    volumes:
-      - openwebui-data:/usr/src/app/models
-    restart: unless-stopped
-
-volumes:
-  openwebui-data:
 ```
 
 ## Setup Instructions
 
-### 1. Build and Start Services
+### 1. Environment Setup
 
-Run the following command in your project directory:
+Create a `.env.local` file for Bolt DIY configuration (if needed).
 
+### 2. Starting the Services
+
+For NVIDIA GPUs:
 ```bash
-docker-compose up --build
+docker compose -f docker-compose-nvidia.yml up -d
 ```
+Note: This will automatically build the custom Ollama image on first run.
 
-### 2. Pull Models
-
-After the services are running, you can pull models using:
-
+For AMD GPUs:
 ```bash
-# First, find your container name
-docker ps
-
-# Then pull the model
-docker exec -it <container-name> bash -c "ollama pull qwen2.5-coder:7b"
+docker compose -f docker-compose-amd.yml up -d
 ```
+Note: AMD version uses pre-built images.
 
-### 3. Access the Services
+### 3. Accessing the Services
 
 - Ollama API: `http://localhost:11434`
 - OpenWebUI: `http://localhost:8080`
-
-### 4. Verify GPU Support
-
-Check if the container can access your NVIDIA GPU:
-
-```bash
-docker exec -it <container-name> nvidia-smi
-```
+- Bolt DIY: `http://localhost:3000`
 
 ## Common Commands
 
-1. **Start the services:**
-   ```bash
-   docker-compose up -d
-   ```
+Stop services:
+```bash
+docker compose -f docker-compose-[nvidia/amd].yml down
+```
 
-2. **Stop the services:**
-   ```bash
-   docker-compose down
-   ```
+View logs:
+```bash
+docker compose -f docker-compose-[nvidia/amd].yml logs -f
+```
 
-3. **View logs:**
-   ```bash
-   docker-compose logs -f
-   ```
+Rebuild and restart:
+```bash
+docker compose -f docker-compose-[nvidia/amd].yml up -d --build
+```
 
-4. **Restart services:**
-   ```bash
-   docker-compose restart
-   ```
+## Service Details
+
+### Ollama
+- Port: 11434
+- GPU-enabled for both AMD and NVIDIA
+- Persistent storage for models
+
+### OpenWebUI
+- Port: 8080
+- Web interface for Ollama
+- Persistent model storage
+
+### Bolt DIY
+- Port: 3000
+- Development environment
+- Requires `.env.local` configuration
+
+## Volumes
+
+The following persistent volumes are created:
+- `ollama`: For Ollama model storage
+- `openwebui-data`: For OpenWebUI data
+- `bolt-diy-data`: For Bolt DIY data
 
 ## Troubleshooting
 
-1. **Container won't start:**
-   - Check if Docker Desktop is running
-   - Verify NVIDIA Container Toolkit installation
-   - Check the logs: `docker-compose logs`
+1. **GPU Issues:**
+   - For NVIDIA: Run `nvidia-smi` to verify GPU detection
+   - For AMD on Windows:
+     - ROCm containers are not supported natively on Windows
+     - Use WSL2 with Ubuntu for AMD GPU support
+     - Or use CPU-only mode by removing GPU configurations
+   - For AMD: Check ROCm installation and compatibility
 
-2. **GPU not detected:**
-   - Verify NVIDIA drivers are installed
-   - Check NVIDIA Container Toolkit configuration
-   - Run `nvidia-smi` on host to verify GPU is recognized
+2. **Container Issues:**
+   - Check logs: `docker compose -f docker-compose-[nvidia/amd].yml logs [service-name]`
+   - Verify port availability
+   - Ensure Docker has GPU access
 
 3. **Network Issues:**
-   - Verify internet connectivity
-   - Check if ports 11434 and 8080 are available
-   - Ensure Docker can access Docker Hub
-
-4. **Model Pull Failures:**
-   - Check internet connection
-   - Verify container has enough disk space
-   - Check Ollama service logs
+   - Verify `host.docker.internal` resolution
+   - Check if required ports are not in use
+   - Ensure services are on the same network
 
 ## Additional Resources
 
-- [Ollama Documentation](https://ollama.ai/docs)
-- [OpenWebUI GitHub](https://github.com/open-webui/open-webui)
-- [NVIDIA Container Toolkit Documentation](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/overview.html)
-- [Docker Documentation](https://docs.docker.com/)
+- [Ollama Documentation](https://github.com/ollama/ollama/tree/main/docs)
+- [OpenWebUI Documentation](https://github.com/open-webui/open-webui)
+- [Bolt DIY Documentation](https://stackblitz-labs.github.io/bolt.diy/)
 
-## Support
+## Using WSL2 for AMD GPU Support
 
-If you encounter any issues:
-1. Check the container logs
-2. Verify your configuration matches the examples
-3. Ensure all prerequisites are properly installed
-4. Check for any system resource limitations
+### 1. Install and Setup WSL2
 
-Remember to always use the latest stable versions of Docker and NVIDIA driversfor the best compatibility.
+1. Open PowerShell as Administrator and run:
+```powershell
+wsl --install
+```
+
+2. Restart your computer when prompted.
+
+3. Install Ubuntu from Microsoft Store or via PowerShell:
+```powershell
+wsl --install -d Ubuntu
+```
+
+### 2. Setup ROCm in WSL2
+
+1. Open Ubuntu in WSL2:
+```powershell
+wsl -d Ubuntu
+```
+
+2. Update the system:
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+3. Install ROCm:
+
+First, remove any existing ROCm installations:
+```bash
+sudo apt purge rocm-* hip-* rocminfo
+sudo apt autoremove
+```
+
+Add the ROCm repository:
+```bash
+sudo mkdir --parents --mode=0755 /etc/apt/keyrings
+wget https://repo.radeon.com/rocm/rocm.gpg.key -O - | \
+    gpg --dearmor | sudo tee /etc/apt/keyrings/rocm.gpg > /dev/null
+
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/rocm/apt/debian jammy main" | \
+    sudo tee /etc/apt/sources.list.d/rocm.list
+
+echo -e 'Package: *\nPin: release o=repo.radeon.com\nPin-Priority: 600' | \
+    sudo tee /etc/apt/preferences.d/rocm-pin-600
+```
+
+Install ROCm packages:
+```bash
+sudo apt update
+sudo apt install rocm-hip-runtime rocm-hip-sdk
+```
+
+4. Add user to video group:
+```bash
+sudo usermod -aG video $LOGNAME
+sudo usermod -aG render $LOGNAME
+```
+
+5. Set up environment variables:
+```bash
+echo 'export PATH=$PATH:/opt/rocm/bin' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/lib' >> ~/.bashrc
+source ~/.bashrc
+```
+
+6. Verify installation:
+```bash
+rocminfo
+```
+
+If successful, you should see information about your AMD GPU.
+
+### 3. Running Docker Compose in WSL2
+
+1. Navigate to your project directory in WSL2:
+```bash
+cd /mnt/c/Users/YourUsername/Documents/GitHub/bolt-diy-full-stack
+```
+
+2. Start the services:
+```bash
+docker compose -f docker-compose-amd.yml up -d
+```
+
+### 4. Accessing Services
+
+The services will be available at the same ports as before:
+- Ollama API: `http://localhost:11434`
+- OpenWebUI: `http://localhost:8080`
+- Bolt DIY: `http://localhost:3000`
+
+### WSL2 Useful Commands
+
+- List installed WSL distributions:
+```powershell
+wsl --list --verbose
+```
+
+- Set Ubuntu as default WSL distribution:
+```powershell
+wsl --set-default Ubuntu
+```
+
+- Access WSL2 Ubuntu directly:
+```powershell
+wsl
+```
+
+- Shutdown WSL:
+```powershell
+wsl --shutdown
+```

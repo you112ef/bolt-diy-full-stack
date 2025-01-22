@@ -14,11 +14,9 @@ services:
           devices:
             - driver: gpu
               capabilities: [compute, utility]
-    environment:
-      - OLLAMA_GPU=1  # Example: enable GPU in the app if applicable
     volumes:
       - ollama:/root/.ollama
-    restart: unless-stoppe
+    restart: unless-stopped
 
   openwebui:
     image: ghcr.io/open-webui/open-webui:latest
