@@ -253,3 +253,37 @@ wsl
 ```powershell
 wsl --shutdown
 ```
+
+## Using Ollama Models
+
+After starting the services, you can pull and use models through either the CLI or OpenWebUI.
+
+### Pull Models via CLI
+
+```bash
+docker exec -it ollama ollama pull qwen:7b
+```
+
+Note: Initial model download may take several minutes depending on your internet connection and hardware.
+
+### Alternative: Using OpenWebUI
+
+1. Open OpenWebUI in your browser: `http://localhost:8080`
+2. Click on "Create New Chat"
+3. Select "Download New Model"
+4. Search for "qwen" and select "qwen:7b"
+5. Click "Download"
+
+### Verify Model Installation
+
+Check if the model was downloaded successfully:
+```bash
+docker exec -it ollama ollama list
+```
+
+You should see `qwen:7b` in the list of available models.
+
+### Start Chatting
+
+- Via OpenWebUI: Navigate to `http://localhost:8080` and start a new chat with qwen:7b
+- Via Bolt DIY: Navigate to `http://localhost:3000` and connect to your local Ollama instance
