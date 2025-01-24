@@ -7,6 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: ollama
     ports:
       - "11434:11434"  # Maps Ollama service port to host
     runtime: nvidia
@@ -28,6 +29,7 @@ services:
 
   openwebui:
     image: ghcr.io/open-webui/open-webui:latest
+    container_name: openwebui
     ports:
       - "8080:8080"  # Maps OpenWebUI default port to host
     runtime: nvidia
