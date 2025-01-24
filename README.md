@@ -34,6 +34,22 @@ cd bolt-diy-full-stack
     - Follow the Quick Start guide for your specific Linux distribution
   - [Supported GPUs List](https://rocm.docs.amd.com/en/latest/release/gpu_os_support.html)
 
+## Quick Start (Windows)
+
+For Windows users, we provide an automated installation script:
+
+1. Double-click `install.bat` or run from command prompt:
+```bash
+.\install.bat
+```
+
+This script will:
+- Start the appropriate services based on your GPU (NVIDIA or AMD)
+- Pull the Qwen 7B model
+- Open your browser to the Bolt DIY interface
+
+Note: The initial model download may take several minutes depending on your internet connection.
+
 ## Project Structure
 
 ```
@@ -288,18 +304,4 @@ You should see `qwen:7b` in the list of available models.
 - Via OpenWebUI: Navigate to `http://localhost:8080` and start a new chat with qwen:7b
 - Via Bolt DIY: Navigate to `http://localhost:3000` and connect to your local Ollama instance
 
-## Quick Start (Windows)
 
-For Windows users, we provide an automated installation script:
-
-1. Double-click `install.bat` or run from command prompt:
-```bash
-.\install.bat
-```
-
-This script will:
-- Start the appropriate services based on your GPU (NVIDIA or AMD)
-- Pull the Qwen 7B model
-- Open your browser to the Bolt DIY interface
-
-Note: The initial model download may take several minutes depending on your internet connection.
