@@ -1,4 +1,4 @@
-# Local AI Development Environment
+# Local AI Development Environment (WORK IN PROGRESS 7 NOT FULLY TESTET, ESPECIALLY AMD GPU)
 
 This project sets up a local AI development environment with Ollama, OpenWebUI, and Bolt DIY, supporting both NVIDIA and AMD GPUs.
 
