@@ -45,7 +45,7 @@ For Windows users, we provide an automated installation script:
 
 This script will:
 - Start the appropriate services based on your GPU (NVIDIA or AMD)
-- Pull the Qwen 7B model
+- Pull the Qwen 7B model (if you dont want this or another model, change it in the script)
 - Open your browser to the Bolt DIY interface
 
 Note: The initial model download may take several minutes depending on your internet connection.
