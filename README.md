@@ -1,4 +1,5 @@
-# Local AI Development Environment
+# Local AI Development Environment 
+## (WORK IN PROGRESS / NOT FULLY TESTET, ESPECIALLY AMD GPU)
 
 This project sets up a local AI development environment with Ollama, OpenWebUI, and Bolt DIY, supporting both NVIDIA and AMD GPUs.
 
@@ -51,7 +52,7 @@ chmod +x install.sh
 
 This script will:
 - Start the appropriate services based on your GPU (NVIDIA or AMD)
-- Pull the Qwen 7B model
+- Pull the Qwen 7B model (if you dont want this or another model, change it in the script)
 - Open your browser to the Bolt DIY interface
 
 Note: The initial model download may take several minutes depending on your internet connection.
