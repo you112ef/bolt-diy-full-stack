@@ -8,12 +8,6 @@ services:
     container_name: ollama
     ports:
       - "11434:11434"
-    # deploy:
-      # resources:
-        # reservations:
-          # devices:
-            # - driver: gpu
-              # capabilities: [compute, utility]
     volumes:
       - ollama:/root/.ollama
     restart: unless-stopped
@@ -31,24 +25,37 @@ services:
       - OLLAMA_URL=http://host.docker.internal:11434
     restart: unless-stopped
 
-  bolt-diy:
-    image: ghcr.io/thecodacus/dash-ai:6d94bef
-    pull_policy: always
-    container_name: bolt-diy
+  bolt-diy-stable:
+    image: ghcr.io/stackblitz-labs/bolt.diy:stable
+    container_name: bolt-diy-stable
     env_file: ".env.local"
     ports:
-      - "3000:5173" 
+      - "3000:5173"
     networks:
       - shared_network
     environment:
-      - NODE_ENV=production
-      - COMPOSE_PROFILES=production
-      # No strictly needed but serving as hints for Coolify
-      - PORT=5173
-      #- OLLAMA_API_BASE_URL=http://host.docker.internal:11434
-      - DEFAULT_NUM_CTX=${DEFAULT_NUM_CTX:-32768}
-      - RUNNING_IN_DOCKER=true
+      - OLLAMA_API_BASE_URL=http://host.docker.internal:11434
+    volumes:
+      - bolt-diy-data:/usr/src/app/data
     restart: unless-stopped
+    profiles:
+      - stable
+
+  bolt-diy-latest:
+    image: ghcr.io/stackblitz-labs/bolt.diy:latest
+    container_name: bolt-diy-latest
+    env_file: ".env.local"
+    ports:
+      - "3000:5173"
+    networks:
+      - shared_network
+    environment:
+      - OLLAMA_API_BASE_URL=http://host.docker.internal:11434
+    volumes:
+      - bolt-diy-data:/usr/src/app/data
+    restart: unless-stopped
+    profiles:
+      - latest
 
 volumes:
   ollama:

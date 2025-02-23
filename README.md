@@ -43,6 +43,12 @@ For Windows users, we provide an automated installation script:
 .\install.bat
 ```
 
+or at linux run:
+```bash
+chmod +x install.sh
+.\install.sh
+```
+
 This script will:
 - Start the appropriate services based on your GPU (NVIDIA or AMD)
 - Pull the Qwen 7B model
@@ -71,15 +77,16 @@ Create a `.env.local` file for Bolt DIY configuration (if needed).
 
 For NVIDIA GPUs:
 ```bash
-docker compose -f docker-compose-nvidia.yml up -d
+docker compose -f docker-compose-nvidia.yml --profile stable up -d
 ```
-Note: This will automatically build the custom Ollama image on first run.
 
 For AMD GPUs:
 ```bash
-docker compose -f docker-compose-amd.yml up -d
+docker compose -f docker-compose-amd.yml --profile stable up -d
 ```
-Note: AMD version uses pre-built images.
+Notes: 
+- This will automatically build the custom Ollama image on first run.
+- If you want to run the latest main branch, use "latest" instead of "stable" as profile
 
 ### 3. Accessing the Services
 
