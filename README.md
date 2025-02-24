@@ -170,6 +170,9 @@ The following persistent volumes are created:
 ```powershell
 wsl --install
 ```
+1.1 If you already have it installed, make sure you got the latest upates
+```powershell
+wsl --update```
 
 2. Restart your computer when prompted.
 
