@@ -40,9 +40,9 @@ cd bolt-diy-full-stack
 For Windows users, we provide an automated installation script:
 
 1. Create a `.env.local` file for Bolt DIY configuration. You can copy the .env.example
-  - Put in your API-Keys if you want. You can also do in the UI as usual.
+- Put in your API-Keys if you want. You can also do in the UI as usual.
 
-3. Double-click `install.bat` or run from command prompt:
+2. Double-click `install.bat` or run from command prompt:
 ```bash
 .\install.bat
 ```
