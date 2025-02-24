@@ -165,7 +165,11 @@ The following persistent volumes are created:
 - [OpenWebUI Documentation](https://github.com/open-webui/open-webui)
 - [Bolt DIY Documentation](https://stackblitz-labs.github.io/bolt.diy/)
 
-## Using WSL2 for AMD GPU Support
+## AMD GPU Support Linux
+Linux docs: https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/prerequisites.html
+
+## Using WSL2 for AMD GPU Support (experimental, did not work so far for me)
+At best take a look at the official Linux docs and try to adapt for WSL: https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/prerequisites.html
 
 ### 1. Install and Setup WSL2
 
