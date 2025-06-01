@@ -5,7 +5,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export default function MobileFlowUI() {
   const [activeView, setActiveView] = useState("flows");
-  const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
 
   return (
     <div className="w-full h-screen flex flex-col bg-white text-black dark:bg-zinc-950 dark:text-white overflow-hidden">
