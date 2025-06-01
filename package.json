@@ -17,7 +17,9 @@
     "class-variance-authority": "*",
     "@radix-ui/react-dialog": "*",
     "lucide-react": "*",
-    "tailwindcss-animate": "*"
+    "tailwindcss-animate": "*",
+    "tailwind-merge": "*",
+    "clsx": "*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
