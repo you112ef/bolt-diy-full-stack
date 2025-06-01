@@ -12,7 +12,12 @@
   "dependencies": {
     "next": "14.2.3",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "@radix-ui/react-slot": "*",
+    "class-variance-authority": "*",
+    "@radix-ui/react-dialog": "*",
+    "lucide-react": "*",
+    "tailwindcss-animate": "*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
