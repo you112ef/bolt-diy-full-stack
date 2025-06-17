@@ -51,7 +51,9 @@ services:
     restart: unless-stopped
 
   bolt-diy-stable:
-    image: ghcr.io/stackblitz-labs/bolt.diy:stable
+    # This image should be built from your modified fork of bolt.diy
+    # and tagged as your-custom-bolt-diy:stable
+    image: your-custom-bolt-diy:stable
     container_name: bolt-diy-stable
     env_file: ".env.local"
     ports:
@@ -67,7 +69,9 @@ services:
       - stable
 
   bolt-diy-latest:
-    image: ghcr.io/stackblitz-labs/bolt.diy:latest
+    # This image should be built from your modified fork of bolt.diy
+    # and tagged as your-custom-bolt-diy:latest
+    image: your-custom-bolt-diy:latest
     container_name: bolt-diy-latest
     env_file: ".env.local"
     ports:

@@ -139,6 +139,42 @@ The following persistent volumes are created:
 - `openwebui-data`: For OpenWebUI data
 - `bolt-diy-data`: For Bolt DIY data
 
+## Using a Custom Bolt DIY Image
+
+To implement custom UI changes for Bolt DIY (such as adding custom borders or other visual modifications as discussed) or to use a version of Bolt DIY with your own custom-developed services, you will need to build your own Docker image of Bolt DIY and use it with this project.
+
+### 1. Modifying Bolt DIY
+
+*   **Get the Source Code:** Clone the official Bolt DIY repository from [https://github.com/StackBlitz-Labs/bolt.diy](https://github.com/StackBlitz-Labs/bolt.diy).
+*   **Make Your Changes:** Modify the source code as needed. For UI changes, this will typically involve editing CSS files. For custom services, this might involve more extensive code additions or modifications.
+*   **Follow Development Guidelines:** Refer to the `bolt.diy` project's own `README.md` and `CONTRIBUTING.md` for guidance on development and local setup.
+
+### 2. Building Your Custom Docker Image
+
+*   The `bolt.diy` project provides instructions for building its own Docker image. Typically, this involves commands like `npm run dockerbuild` or `docker build . --target bolt-ai-development` executed within the `bolt.diy` project directory. Consult their `README.md` for the exact and current commands.
+*   Once the image is built, you need to tag it so that Docker Compose can find it. The Docker Compose files in this `bolt-diy-full-stack` project (`docker-compose-nvidia.yml` and `docker-compose-amd.yml`) have been updated to look for images named:
+    *   `your-custom-bolt-diy:stable` (for the stable profile)
+    *   `your-custom-bolt-diy:latest` (for the latest profile)
+*   So, after building your image, tag it accordingly. For example:
+    ```bash
+    # Assuming your locally built image ID is <your-image-id>
+    # and you want to use it for the 'stable' profile:
+    docker tag <your-image-id> your-custom-bolt-diy:stable
+
+    # If you want to use it for the 'latest' profile:
+    docker tag <your-image-id> your-custom-bolt-diy:latest
+    ```
+    Replace `<your-image-id>` with the actual ID of the image you built. If your build script for `bolt.diy` already produces a named image like `bolt-ai-development:latest`, you can tag that directly:
+    ```bash
+    docker tag bolt-ai-development:latest your-custom-bolt-diy:stable
+    ```
+
+### 3. Running with the Custom Image
+
+Once your custom image is built and tagged correctly, the existing `docker compose up` commands for this `bolt-diy-full-stack` project should automatically pick it up, provided Docker can find the image locally. If you push your custom image to a Docker registry, you would need to update the image names in the `docker-compose-*.yml` files to include the full registry path.
+
+**Note on Service Integration:** The Docker Compose files (`docker-compose-nvidia.yml` and `docker-compose-amd.yml`) define how Bolt DIY and other services (like Ollama) are networked and configured. If your custom Bolt DIY version or the new services you develop for it require specific environment variables or network setups, you may need to further adjust these Docker Compose files.
+
 ## Troubleshooting
 
 1. **GPU Issues:**
