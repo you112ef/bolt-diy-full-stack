@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { AIProvider } from '../types';
 import { Button } from './ui/Button';
-import { cn } from '../lib/utils';
+// Simple utility function
+const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
 
 interface AIProviderSettingsProps {
   isOpen: boolean;

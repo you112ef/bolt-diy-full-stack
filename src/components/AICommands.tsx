@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { Button } from './ui/Button';
 import { AI_COMMANDS } from '../lib/ai-providers';
-import { cn } from '../lib/utils';
+// Simple utility function
+const cn = (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' ');
 
 interface AICommandsProps {
   isOpen: boolean;

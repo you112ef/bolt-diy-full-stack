@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useAppStore } from '../store/useAppStore';
-import { cn } from '../lib/utils';
+// Simple utility function
+const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
 
 interface CodeEditorProps {
   className?: string;
