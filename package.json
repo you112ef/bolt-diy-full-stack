@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next export",
+    "export": "echo 'Static export is handled automatically during build with output: export'",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "deploy:cf": "npm run build && echo 'Upload dist folder to Cloudflare Pages'",
+    "deploy:vercel": "vercel --prod",
+    "deploy:netlify": "npm run build && netlify deploy --prod --dir=dist"
   },
   "dependencies": {
     "next": "^14.0.4",
