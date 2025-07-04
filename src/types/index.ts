@@ -21,6 +21,15 @@ export interface AIMessage {
     command?: string;
     file?: string;
     type?: 'code' | 'explanation' | 'fix' | 'documentation';
+    model?: string;
+    usage?: {
+      prompt_tokens: number;
+      completion_tokens: number;
+      total_tokens: number;
+    };
+    error?: boolean;
+    selectedText?: string;
+    [key: string]: any; // Allow additional metadata properties
   };
 }
 

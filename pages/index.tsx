@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useAppStore } from '../src/store/useAppStore';
 import { CodeEditor } from '../src/components/CodeEditor';
 import { FileTree } from '../src/components/FileTree';
+import { AIProviderSettings } from '../src/components/AIProviderSettings';
+import { AICommands } from '../src/components/AICommands';
 import { Button } from '../src/components/ui/Button';
 import { cn } from '../src/lib/utils';
 
 const Header = () => {
   const { agent, providers, setProvider, settings, toggleAIChat } = useAppStore();
+  const [showSettings, setShowSettings] = useState(false);
+  const [showAICommands, setShowAICommands] = useState(false);
 
   return (
     <header className="h-12 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-4">
@@ -36,18 +40,44 @@ const Header = () => {
         <Button
           variant="ghost"
           size="xs"
+          onClick={() => setShowAICommands(true)}
+          className="responsive-button"
+          disabled={!agent.provider}
+        >
+          ⚡ AI Commands
+        </Button>
+        <Button
+          variant="ghost"
+          size="xs"
           onClick={toggleAIChat}
           className="responsive-button"
         >
-          🤖 AI Assistant
+          🤖 AI Chat
         </Button>
         <Button variant="ghost" size="xs" className="responsive-button">
           🔗 Deploy
         </Button>
-        <Button variant="ghost" size="xs" className="responsive-button">
+        <Button 
+          variant="ghost" 
+          size="xs" 
+          className="responsive-button"
+          onClick={() => setShowSettings(true)}
+        >
           ⚙️ Settings
         </Button>
       </div>
+      
+      {/* AI Provider Settings Modal */}
+      <AIProviderSettings 
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+      />
+      
+      {/* AI Commands Modal */}
+      <AICommands
+        isOpen={showAICommands}
+        onClose={() => setShowAICommands(false)}
+      />
     </header>
   );
 };

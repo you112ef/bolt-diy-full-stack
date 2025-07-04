@@ -10,6 +10,12 @@ import {
   Project,
   TerminalSession,
 } from '../types';
+import { 
+  callAIProvider, 
+  DEFAULT_AI_PROVIDERS, 
+  buildAIContext,
+  AIProviderConfig 
+} from '../lib/ai-providers';
 
 interface AppState {
   // AI Agent
@@ -36,6 +42,7 @@ interface AppState {
   // Actions
   setProvider: (providerName: string) => void;
   addProvider: (provider: AIProvider) => void;
+  updateProviderConfig: (providerName: string, config: Partial<AIProvider>) => void;
   askAgent: (prompt: string, context?: any) => Promise<string>;
   addToMemory: (message: AIMessage) => void;
   clearMemory: () => void;
@@ -89,11 +96,7 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       // Initial state
       agent: defaultAgent,
-      providers: [
-        { name: 'gpt-4', model: 'gpt-4' },
-        { name: 'claude', model: 'claude-3' },
-        { name: 'deepseek', model: 'deepseek-coder' },
-      ],
+      providers: DEFAULT_AI_PROVIDERS,
       isAgentThinking: false,
       
       currentProject: null,
@@ -126,20 +129,65 @@ export const useAppStore = create<AppState>()(
         }));
       },
       
+      updateProviderConfig: (providerName: string, config: Partial<AIProvider>) => {
+        set((state) => ({
+          providers: state.providers.map(provider =>
+            provider.name === providerName
+              ? { ...provider, ...config }
+              : provider
+          ),
+        }));
+      },
+      
       askAgent: async (prompt: string, context?: any) => {
         const state = get();
         
         if (!state.agent.provider) {
-          throw new Error('No AI provider selected');
+          throw new Error('لم يتم اختيار مقدم خدمة الذكاء الاصطناعي');
         }
         
         set({ isAgentThinking: true });
         
         try {
-          const contextStr = await getCurrentFileContext();
-          const fullPrompt = `Context:\n${contextStr}\n\nUser:\n${prompt}`;
+          // Build context from current state
+          const activeTab = state.openTabs.find(tab => tab.id === state.activeTabId);
+          const projectFiles = state.fileTree.map(file => file.path);
+          const recentCommands = state.agent.memory
+            .filter(msg => msg.role === 'user')
+            .slice(-5)
+            .map(msg => msg.content);
           
-          const response = await callAI(state.agent.provider, fullPrompt);
+          const aiContext = buildAIContext(
+            activeTab?.path,
+            context?.selectedText,
+            projectFiles,
+            recentCommands
+          );
+          
+          const fullPrompt = `${aiContext}\n\nطلب المستخدم: ${prompt}`;
+          
+          // Get provider configuration
+          const provider = state.providers.find(p => p.name === state.agent.provider);
+          if (!provider) {
+            throw new Error(`Provider ${state.agent.provider} not found`);
+          }
+          
+          const providerConfig: AIProviderConfig = {
+            name: provider.name,
+            apiKey: provider.apiKey,
+            endpoint: provider.endpoint,
+            model: provider.model,
+            maxTokens: 2000,
+            temperature: 0.7
+          };
+          
+          // Call the actual AI provider
+          const response = await callAIProvider(
+            state.agent.provider,
+            fullPrompt,
+            providerConfig,
+            state.agent.memory.slice(-10) // Last 10 messages for context
+          );
           
           // Add to memory
           const userMessage: AIMessage = {
@@ -151,8 +199,12 @@ export const useAppStore = create<AppState>()(
           
           const aiMessage: AIMessage = {
             role: 'assistant',
-            content: response,
+            content: response.content,
             timestamp: Date.now(),
+            metadata: {
+              model: response.model,
+              usage: response.usage
+            }
           };
           
           set((state) => ({
@@ -160,10 +212,30 @@ export const useAppStore = create<AppState>()(
               ...state.agent,
               memory: [...state.agent.memory, userMessage, aiMessage],
               lastCommand: prompt,
+              context: aiContext
             },
           }));
           
-          return response;
+          return response.content;
+        } catch (error) {
+          console.error('AI Agent Error:', error);
+          
+          // Add error message to memory
+          const errorMessage: AIMessage = {
+            role: 'assistant',
+            content: `عذراً، حدث خطأ أثناء معالجة طلبك: ${error instanceof Error ? error.message : 'خطأ غير معروف'}`,
+            timestamp: Date.now(),
+            metadata: { error: true }
+          };
+          
+          set((state) => ({
+            agent: {
+              ...state.agent,
+              memory: [...state.agent.memory, errorMessage],
+            },
+          }));
+          
+          throw error;
         } finally {
           set({ isAgentThinking: false });
         }
@@ -394,7 +466,7 @@ export const useAppStore = create<AppState>()(
   )
 );
 
-// Helper functions
+// Helper functions for backward compatibility
 async function getCurrentFileContext(): Promise<string> {
   const state = useAppStore.getState();
   const activeTab = state.openTabs.find(tab => tab.id === state.activeTabId);
@@ -404,22 +476,6 @@ async function getCurrentFileContext(): Promise<string> {
   }
   
   return `File: ${activeTab.path}\nContent:\n${activeTab.content}`;
-}
-
-async function callAI(provider: string, prompt: string): Promise<string> {
-  // Mock AI call - in real app would integrate with actual AI APIs
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  switch (provider) {
-    case 'gpt-4':
-      return `GPT-4 response to: ${prompt.slice(0, 50)}...`;
-    case 'claude':
-      return `Claude response to: ${prompt.slice(0, 50)}...`;
-    case 'deepseek':
-      return `DeepSeek response to: ${prompt.slice(0, 50)}...`;
-    default:
-      return 'No model chosen.';
-  }
 }
 
 function getLanguageFromFile(filename: string): string {
