@@ -1,0 +1,7 @@
+/*    /index.html   200
+
+# API routes
+/api/*  /api/:splat  200
+
+# 404 fallback
+/*      /404.html    404

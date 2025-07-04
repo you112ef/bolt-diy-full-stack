@@ -1,325 +1,310 @@
-# Local AI Development Environment 
-## (WORK IN PROGRESS / NOT FULLY TESTET, ESPECIALLY AMD GPU)
+# Yousef SS - AI-Powered Development Platform
 
-This project sets up a local AI development environment with Ollama, OpenWebUI, and Bolt DIY, supporting both NVIDIA and AMD GPUs.
+[![Deploy to Cloudflare Pages](https://img.shields.io/badge/Deploy%20to-Cloudflare%20Pages-orange)](https://pages.cloudflare.com/)
+[![Deploy to Vercel](https://img.shields.io/badge/Deploy%20to-Vercel-black)](https://vercel.com/)
+[![Deploy to Netlify](https://img.shields.io/badge/Deploy%20to-Netlify-00C7B7)](https://netlify.com/)
 
-## Getting Started
+A modern, AI-powered development platform similar to [same.new](https://same.new) and [manus.im](https://manus.im), featuring intelligent agents, code editors, terminals, and seamless deployment integration.
 
-1. Clone the repository:
+## ✨ Features
+
+### 🤖 AI-Powered Development
+- **Dynamic AI Agents**: Switch between GPT-4, Claude, DeepSeek, and other models
+- **Context-Aware Assistance**: AI understands your current file and project context
+- **Smart Commands**: "Explain this file", "Fix this error", "Add documentation"
+- **Real-time Code Suggestions**: AI-powered completions while you type
+
+### 📝 Advanced Code Editor
+- **Monaco Editor**: Full-featured editor with VS Code-like experience
+- **Multi-file Support**: Tab-based editing with syntax highlighting
+- **Language Detection**: Automatic language recognition and formatting
+- **Auto-save**: Configurable auto-save functionality
+- **Keyboard Shortcuts**: Comprehensive shortcut support
+
+### 🗂️ Smart File Management
+- **Interactive File Tree**: Drag & drop, create, delete files and folders
+- **Project Templates**: Quick project setup with popular frameworks
+- **File Upload**: Drag & drop files or import ZIP archives
+- **GitHub Integration**: Import projects directly from GitHub
+
+### 💻 Integrated Terminal
+- **Multiple Sessions**: Create and manage multiple terminal sessions
+- **Command History**: Persistent command history and output
+- **AI Terminal Assistant**: Get explanations for terminal commands and outputs
+- **Visual Output**: Clear, formatted command results
+
+### 🚀 One-Click Deployment
+- **Vercel Integration**: Deploy directly to Vercel
+- **Netlify Support**: Push to Netlify with configuration
+- **Cloudflare Pages**: Optimized for Cloudflare deployment
+- **Export Options**: Download as ZIP, generate PWA, or create APK
+
+### 🎨 Modern UI/UX
+- **Dark Mode**: Beautiful dark theme with violet accents
+- **Responsive Design**: Optimized for desktop and mobile (360x800+)
+- **Arabic Support**: RTL layout and Arabic language support
+- **Accessible**: WCAG compliant design
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn package manager
+
+### Installation
+
+#### Option 1: Automated Setup (Recommended)
+
+**Linux/macOS:**
 ```bash
-git clone https://github.com/leex279/bolt-diy-full-stack.git
+git clone <repository-url>
+cd yousef-ss
+chmod +x setup.sh
+./setup.sh
 ```
 
-2. Navigate to the project directory:
+**Windows:**
+```cmd
+git clone <repository-url>
+cd yousef-ss
+setup.bat
+```
+
+#### Option 2: Manual Setup
+
+1. **Clone the repository:**
 ```bash
-cd bolt-diy-full-stack
+git clone <repository-url>
+cd yousef-ss
 ```
 
-## Prerequisites
-
-- Docker and Docker Compose
-  - [Install Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)
-  - [Docker Compose Installation](https://docs.docker.com/compose/install/)
-
-- For NVIDIA GPUs:
-  - [Latest NVIDIA Drivers](https://www.nvidia.com/Download/index.aspx)
-  - [NVIDIA Container Toolkit Installation](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
-
-- For AMD GPUs:
-  - Windows:
-    - ⚠️ **Important Note**: ROCm containers are currently not supported natively on Windows. You have two options:
-      1. Use WSL2 with Ubuntu and follow the [ROCm Installation Guide for Linux](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/)
-      2. Use the CPU-only version by removing the GPU-related configurations from the docker-compose file
-  - Linux:
-    - [ROCm Installation Guide for Linux](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/)
-    - Follow the Quick Start guide for your specific Linux distribution
-  - [Supported GPUs List](https://rocm.docs.amd.com/en/latest/release/gpu_os_support.html)
-
-## Quick Start (Windows)
-
-For Windows users, we provide an automated installation script:
-
-1. Create a `.env.local` file for Bolt DIY configuration. You can copy the .env.example
-- Put in your API-Keys if you want. You can also do in the UI as usual.
-
-2. Double-click `install.bat` or run from command prompt:
+2. **Install dependencies:**
 ```bash
-.\install.bat
+npm install
 ```
 
-or at linux run:
+3. **Setup environment:**
 ```bash
-chmod +x install.sh
-.\install.sh
+cp .env.example .env.local
 ```
 
-This script will:
-- Start the appropriate services based on your GPU (NVIDIA or AMD)
-- Pull the Qwen 7B model (if you dont want this or another model, change it in the script)
-- Open your browser to the Bolt DIY interface
-
-Note: The initial model download may take several minutes depending on your internet connection.
-
-## Project Structure
-
-```
-project/
-├── docker-compose-amd.yml
-├── docker-compose-nvidia.yml
-├── Dockerfile
-├── .env.local
-└── README.md
-```
-
-## Setup Instructions
-
-### 1. Environment Setup
-
-Create a `.env.local` file for Bolt DIY configuration.
-
-### 2. Starting the Services
-
-For NVIDIA GPUs:
+4. **Start development server:**
 ```bash
-docker compose -f docker-compose-nvidia.yml --profile stable up -d
+npm run dev
 ```
 
-For AMD GPUs:
-```bash
-docker compose -f docker-compose-amd.yml --profile stable up -d
-```
-Notes: 
-- This will automatically build the custom Ollama image on first run.
-- If you want to run the latest main branch, use "latest" instead of "stable" as profile
+5. **Open your browser:**
+Visit [http://localhost:3000](http://localhost:3000)
 
-### 3. Accessing the Services
+## 🔧 Configuration
 
-- Ollama API: `http://localhost:11434`
-- OpenWebUI: `http://localhost:8080`
-- Bolt DIY: `http://localhost:3000`
+### Environment Variables
 
-## Common Commands
+Edit `.env.local` to configure your AI providers and integrations:
 
-Stop services:
-```bash
-docker compose -f docker-compose-[nvidia/amd].yml down
-```
+```env
+# AI API Keys (Optional - can be set in UI)
+OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
 
-View logs:
-```bash
-docker compose -f docker-compose-[nvidia/amd].yml logs -f
+# GitHub Integration
+GITHUB_TOKEN=your_github_token_here
+
+# Deployment Keys
+VERCEL_TOKEN=your_vercel_token_here
+NETLIFY_TOKEN=your_netlify_token_here
+CLOUDFLARE_TOKEN=your_cloudflare_token_here
 ```
 
-Rebuild and restart:
-```bash
-docker compose -f docker-compose-[nvidia/amd].yml up -d --build
+### AI Providers
+
+The platform supports multiple AI providers:
+
+- **GPT-4**: OpenAI's most capable model
+- **Claude**: Anthropic's reasoning-focused model
+- **DeepSeek**: Specialized coding model
+- **Custom Models**: Add your own API endpoints
+
+## 🏗️ Architecture
+
+### Core Components
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Base UI components (Button, Input, etc.)
+│   ├── CodeEditor.tsx  # Monaco editor wrapper
+│   ├── FileTree.tsx    # File explorer component
+│   └── Terminal.tsx    # Terminal interface
+├── store/              # Zustand state management
+├── types/              # TypeScript type definitions
+├── lib/                # Utility functions
+└── styles/             # Global styles and themes
 ```
 
-## Service Details
+### State Management
 
-### Ollama
-- Port: 11434
-- GPU-enabled for both AMD and NVIDIA
-- Persistent storage for models
+Uses Zustand for efficient state management:
 
-### OpenWebUI
-- Port: 8080
-- Web interface for Ollama
-- Persistent model storage
+- **AI Agent State**: Provider, memory, context
+- **File System**: Projects, files, editor tabs
+- **UI State**: Sidebars, modals, settings
+- **Terminal State**: Sessions, command history
 
-### Bolt DIY
-- Port: 3000
-- Development environment
-- Requires `.env.local` configuration
+## 🚀 Deployment
 
-## Volumes
-
-The following persistent volumes are created:
-- `ollama`: For Ollama model storage
-- `openwebui-data`: For OpenWebUI data
-- `bolt-diy-data`: For Bolt DIY data
-
-## Troubleshooting
-
-1. **GPU Issues:**
-   - For NVIDIA: Run `nvidia-smi` to verify GPU detection
-   - For AMD on Windows:
-     - ROCm containers are not supported natively on Windows
-     - Use WSL2 with Ubuntu for AMD GPU support
-     - Or use CPU-only mode by removing GPU configurations
-   - For AMD: Check ROCm installation and compatibility
-
-2. **Container Issues:**
-   - Check logs: `docker compose -f docker-compose-[nvidia/amd].yml logs [service-name]`
-   - Verify port availability
-   - Ensure Docker has GPU access
-
-3. **Network Issues:**
-   - Verify `host.docker.internal` resolution
-   - Check if required ports are not in use
-   - Ensure services are on the same network
-
-## Additional Resources
-
-- [Ollama Documentation](https://github.com/ollama/ollama/tree/main/docs)
-- [OpenWebUI Documentation](https://github.com/open-webui/open-webui)
-- [Bolt DIY Documentation](https://stackblitz-labs.github.io/bolt.diy/)
-
-## AMD GPU Support Linux
-Linux docs: https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/prerequisites.html
-
-## Using WSL2 for AMD GPU Support (experimental, did not work so far for me)
-At best take a look at the official Linux docs and try to adapt for WSL: https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/prerequisites.html
-
-### 1. Install and Setup WSL2
-
-1. Open PowerShell as Administrator and run:
-```powershell
-wsl --install
-```
-1.1 If you already have it installed, make sure you got the latest upates
-```powershell
-wsl --update```
-
-2. Restart your computer when prompted.
-
-3. Install Ubuntu from Microsoft Store or via PowerShell:
-```powershell
-wsl --install -d Ubuntu
-```
-
-### 2. Setup ROCm in WSL2
-
-1. Open Ubuntu in WSL2:
-```powershell
-wsl -d Ubuntu
-```
-
-2. Update the system:
-```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-3. Install ROCm:
-
-First, remove any existing ROCm installations:
-```bash
-sudo apt purge rocm-* hip-* rocminfo
-sudo apt autoremove
-```
-
-Add the ROCm repository:
-```bash
-sudo mkdir --parents --mode=0755 /etc/apt/keyrings
-wget https://repo.radeon.com/rocm/rocm.gpg.key -O - | \
-    gpg --dearmor | sudo tee /etc/apt/keyrings/rocm.gpg > /dev/null
-
-echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/rocm/apt/debian jammy main" | \
-    sudo tee /etc/apt/sources.list.d/rocm.list
-
-echo -e 'Package: *\nPin: release o=repo.radeon.com\nPin-Priority: 600' | \
-    sudo tee /etc/apt/preferences.d/rocm-pin-600
-```
-
-Install ROCm packages:
-```bash
-sudo apt update
-sudo apt install rocm-hip-runtime rocm-hip-sdk
-```
-
-4. Add user to video group:
-```bash
-sudo usermod -aG video $LOGNAME
-sudo usermod -aG render $LOGNAME
-```
-
-5. Set up environment variables:
-```bash
-echo 'export PATH=$PATH:/opt/rocm/bin' >> ~/.bashrc
-echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/lib' >> ~/.bashrc
-source ~/.bashrc
-```
-
-6. Verify installation:
-```bash
-rocminfo
-```
-
-If successful, you should see information about your AMD GPU.
-
-### 3. Running Docker Compose in WSL2
-
-1. Navigate to your project directory in WSL2:
-```bash
-cd /mnt/c/Users/YourUsername/Documents/GitHub/bolt-diy-full-stack
-```
-
-2. Start the services:
-```bash
-docker compose -f docker-compose-amd.yml up -d
-```
-
-### 4. Accessing Services
-
-The services will be available at the same ports as before:
-- Ollama API: `http://localhost:11434`
-- OpenWebUI: `http://localhost:8080`
-- Bolt DIY: `http://localhost:3000`
-
-### WSL2 Useful Commands
-
-- List installed WSL distributions:
-```powershell
-wsl --list --verbose
-```
-
-- Set Ubuntu as default WSL distribution:
-```powershell
-wsl --set-default Ubuntu
-```
-
-- Access WSL2 Ubuntu directly:
-```powershell
-wsl
-```
-
-- Shutdown WSL:
-```powershell
-wsl --shutdown
-```
-
-## Using Ollama Models
-
-After starting the services, you can pull and use models through either the CLI or OpenWebUI.
-
-### Pull Models via CLI
+### Cloudflare Pages (Recommended)
 
 ```bash
-docker exec -it ollama ollama pull qwen:7b
+npm run build && npm run export
 ```
 
-Note: Initial model download may take several minutes depending on your internet connection and hardware.
+Upload the `dist` folder to Cloudflare Pages.
 
-### Alternative: Using OpenWebUI
+### Vercel
 
-1. Open OpenWebUI in your browser: `http://localhost:8080`
-2. Click on "Create New Chat"
-3. Select "Download New Model"
-4. Search for "qwen" and select "qwen:7b"
-5. Click "Download"
-
-### Verify Model Installation
-
-Check if the model was downloaded successfully:
 ```bash
-docker exec -it ollama ollama list
+vercel --prod
 ```
 
-You should see `qwen:7b` in the list of available models.
+### Netlify
 
-### Start Chatting
+```bash
+npm run build && npm run export
+netlify deploy --prod --dir=dist
+```
 
-- Via OpenWebUI: Navigate to `http://localhost:8080` and start a new chat with qwen:7b
-- Via Bolt DIY: Navigate to `http://localhost:3000` and connect to your local Ollama instance
+### Docker
+
+```bash
+docker build -t yousef-ss .
+docker run -p 3000:3000 yousef-ss
+```
+
+## 🤖 AI Agent Usage
+
+### Smart Commands
+
+The AI agent responds to natural language commands:
+
+- **"Explain this file"** - Get detailed code explanations
+- **"Fix this error"** - Automatic error detection and fixes
+- **"Add documentation"** - Generate comprehensive docs
+- **"Optimize this code"** - Performance improvements
+- **"Create a React component"** - Generate boilerplate code
+
+### Context Awareness
+
+The agent maintains context of:
+- Current file content
+- Project structure
+- Recent commands
+- Error messages
+- User preferences
+
+### Keyboard Shortcuts
+
+- `Ctrl/Cmd + J` - Explain selected code
+- `Ctrl/Cmd + Shift + A` - Open AI chat
+- `Ctrl/Cmd + Shift + T` - Toggle terminal
+- `Ctrl/Cmd + Shift + E` - Toggle file explorer
+
+## 📱 Mobile Support
+
+Optimized for mobile development:
+
+- **Responsive Layout**: Adapts to screen sizes from 360px
+- **Touch Controls**: Swipe gestures and touch-friendly UI
+- **Mobile Terminal**: Full terminal functionality on mobile
+- **Floating Actions**: Quick access to common functions
+
+## 🌍 Internationalization
+
+### Supported Languages
+
+- **English**: Default language
+- **Arabic**: Full RTL support
+
+### Adding Languages
+
+1. Create translation files in `src/locales/`
+2. Update language selector in settings
+3. Add RTL support if needed
+
+## 🔌 Integrations
+
+### GitHub
+
+- Import repositories
+- Push changes
+- Create pull requests
+- Sync with remote
+
+### Deployment Platforms
+
+- **Vercel**: Direct deployment with build configuration
+- **Netlify**: Form handling and edge functions
+- **Cloudflare Pages**: Edge deployment with Workers
+
+## 🛠️ Development
+
+### Project Structure
+
+```
+yousef-ss/
+├── public/             # Static assets
+├── pages/              # Next.js pages
+├── src/                # Source code
+├── docker-compose*.yml # Docker orchestration (legacy)
+├── Dockerfile          # Custom container (legacy)
+└── setup.*             # Installation scripts
+```
+
+### Available Scripts
+
+```bash
+npm run dev         # Start development server
+npm run build       # Build for production
+npm run export      # Export static files
+npm run lint        # Run ESLint
+npm run type-check  # TypeScript checking
+```
+
+### Adding New Features
+
+1. **Components**: Create in `src/components/`
+2. **Store**: Add state in `src/store/useAppStore.ts`
+3. **Types**: Define in `src/types/index.ts`
+4. **Styles**: Use Tailwind classes or add to `globals.css`
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push branch: `git push origin feature/amazing-feature`
+5. Open Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by [same.new](https://same.new) and [manus.im](https://manus.im)
+- Built with [Next.js](https://nextjs.org/), [Monaco Editor](https://microsoft.github.io/monaco-editor/), and [Tailwind CSS](https://tailwindcss.com/)
+- AI integration powered by OpenAI, Anthropic, and DeepSeek APIs
+
+## 📧 Support
+
+For support and questions:
+- Open an issue on GitHub
+- Join our Discord community
+- Email: support@yousefss.dev
+
+---
+
+**Made with ⚡ by Yousef SS**
 
 
